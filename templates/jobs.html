@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+        
+    <title>Web Scraper</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>   
+     <style>
+         .container-fluid{
+            background-color: rgb(43, 36, 102);
+        }
+        .navbar{
+            color: #fff;
+            background-color: rgb(43, 36, 102);
+           
+        }
+        .nav-link{
+            color: #fff !important;
+        }
+        .row{
+            margin-bottom: 30px;
+        }
+        .header{
+            color: #333;
+
+            background-color: rgb(231, 231, 231);
+            padding-top: 5rem;
+            padding-bottom: 1em;
+            text-align: center !important;
+        }
+        .header h1{
+            font-size: 300%;
+            font-weight: 900;
+        }
+        .header p{
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .row-form{
+            margin-top: 3em;
+            margin-bottom: 3em;
+        }
+        .form-card{
+            border: 1px solid #888;
+            border-radius: 15px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            text-align: center;
+        }
+        .form-control{
+            width: 60%;
+            margin: auto;
+        }
+        
+        input[type=text] {
+            visibility:hidden;
+        }
+
+        input[type=checkbox]:checked + input[type=text] {
+            visibility:visible;
+        }
+        .result{
+            text-align: center ;
+        }
+        .card{
+            background-color: #ffffff;
+            margin-top: 10px;
+            box-shadow: 3px 3px 8px 3px rgb(236, 236, 236);
+            text-align: left !important;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            height: 440px;
+            
+        }
+        .card .card-title{
+            height: 80px;
+            padding: 2%;
+            font-size: 100%;
+            font-weight: bold;
+            background-color: #eadffd;
+        }
+        
+        .card .card-body{
+            padding: 2% 5% 5% 5%;
+        }
+        .company{
+            height: 20%;
+            overflow: auto;
+        }
+        .skills{
+            height: 35%;
+            overflow: auto;
+        }
+        .apply-btn a{
+            color: #fff;
+        }
+        .empty-result{
+            margin-top: 3em;
+            font-size: 130%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light  navbar-fixed-top">
+            <div class="container">
+              
+                <ul class="navbar-nav ms-auto" >
+                    <li class="nav-item">
+                      <a class="nav-link " aria-current="page" href="/" style="margin-right: 40px;font-size:20px">Home</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#" style="margin-right: 40px;font-size:20px">About</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 40px;font-size:20px">
+                        Web Scrapers
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item active" href="/jobs">Jobs Scraper</a></li>
+                        <li><a class="dropdown-item " href="/deals">Deal of day</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+            </div>
+          </nav>
+        <div class="row header">
+            <div class="col-12 col-md-8 offset-md-2">
+                <h1>Entery Level Jobs On Times Jobs</h1>
+                <p>This is a web app implementation of web scrapping for job searching purpose. It provides the most recent 
+                    <b><a href="https://www.timesjobs.com/candidate/job-search.html?searchType=personalizedSearch&from=submit&txtKeywords=&txtLocation=&cboWorkExp1=0">Entery Level</a></b>
+                     jobs posted on <b><a href='https://www.timesjobs.com/'>Times Job</a></b> website.
+                     Just provide the job skill you are searching for and this web scraper will filter the job results which include the input skill.
+                    </p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row row-form">
+            <div class="col-12 col-md-6 offset-md-3 form-card">
+                <form class="form" action="{{url_for('scrape_jobs')}}" method="POST">
+                    <label for="check">Select check-box for skills filter :  </label>
+                    <input type="checkbox" id='check' >
+                    <input type="text" name='familier_skill' class="form-control" placeholder="Enter skills to be included"  >
+                    <small style="color: orangered;">*** use lower case for input ***</small><br>
+                    <button class="btn btn-primary" type="submit" value="submit">Run Job Scraper</button>
+                </form>
+            </div>
+        </div>
+        <div class="row result">
+                {%if data%}
+                {%if data[0]=="non_empty"%}
+                {%for job in data[1]%}
+                <div class="col-4">
+                    <div class="card">
+                        <div class="card-title">Job title : {{job['job_title']}}</div>
+                        <div class="card-body">
+                            <p class="company"><b>Company name :</b> {{job['company_name']}}</p>
+                            <p class="skills"><b>Skills Required :</b> {{job['skills']}}</p>
+                            <p><b>To apply :</b> <button class="btn btn-primary apply-btn"><a href={{job["link"]}}>Click here</a></button></p>
+                            <p>{{job['post_time']}}</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                {%endfor%}
+                {%else%}
+                <div class="col-12">
+                    <p class="empty-result">{{data[1]}}</p>
+                </div>
+                {%endif%}
+                {%endif%}
+        </div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+        
+    <title>Web Scraper</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>   
+     <style>
+        .container-fluid{
+            background-color: rgb(43, 36, 102);
+        }
+        .navbar{
+            color: #fff;
+            background-color: rgb(43, 36, 102);
+           
+        }
+        .nav-link{
+            color: #fff !important;
+        }
+        .row{
+            margin-bottom: 30px;
+        }
+        .header{
+            color: #333;
+
+            background-color: rgb(231, 231, 231);
+            padding-top: 5rem;
+            padding-bottom: 2em;
+            text-align: center !important;
+        }
+        .header h1{
+            font-size: 300%;
+            font-weight: 900;
+        }
+        .header p{
+            margin-top: 30px;
+            margin-bottom: 30px;
+        }
+        .row-form{
+            margin-top: 5em;
+        }
+        .form-card{
+            border: 1px solid #888;
+            border-radius: 15px;
+            padding-top: 30px;
+            padding-bottom: 30px;
+            text-align: center;
+        }
+        .form-control{
+            width: 60%;
+            margin: auto;
+        }
+        
+        input[type=text] {
+            visibility:hidden;
+        }
+
+        input[type=checkbox]:checked + input[type=text] {
+            visibility:visible;
+        }
+        .result{
+            text-align: center ;
+            margin-top: 3em;
+        }
+        .result h2{
+            margin-bottom: 2.5em;
+        }
+        .caed-col{
+            margin-bottom: 2em;
+        }
+        .card{
+            background-color: #ffffff;
+            margin-top: 10px;
+            /*box-shadow: 3px 3px 8px 3px rgb(236, 236, 236);*/
+            border: none;
+            text-align: left !important;
+            margin-top: 15px;
+            margin-bottom: 20px;
+            height: 400px;
+            width:100%;
+            
+        }
+        .card img{
+            height:50%;
+            width:70%;
+        }
+        
+        
+
+    </style>
+</head>
+<body>
+    
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg navbar-light  navbar-fixed-top">
+            <div class="container">
+              
+                <ul class="navbar-nav ms-auto" >
+                    <li class="nav-item">
+                      <a class="nav-link " aria-current="page" href="/" style="margin-right: 40px;font-size:20px">Home</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" href="#" style="margin-right: 40px;font-size:20px">About</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="margin-right: 40px;font-size:20px">
+                        Web Scrapers
+                      </a>
+                      <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item " href="/jobs">Jobs Scraper</a></li>
+                        <li><a class="dropdown-item active" href="/deals">Deal of day</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+            </div>
+          </nav>
+        <div class="row header">
+            <div class="col-12 col-md-8 offset-md-2">
+                <h1>Flipkart Deal Of The Day</h1>
+                <p>This is a web app implementation of webscraper for flipkart. It provides deals of the day from flipkart website.
+                    </p>
+                    <form class="form" action="{{url_for('scrape_deals')}}" method="POST">
+                        <input type='text' name='deal' hidden value='1'>
+                        <button class="btn btn-primary" type="submit" value="Submit">Run Deal Scraper</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        
+        <div class="row result">
+            {%if data%}
+            <h2>{{data[0]}}hrs. {{data[1]}}min. left</h2>
+            {%for deal in data[2]%}
+            <div class="col-12 col-md-3 card-col">
+                <div class="card">
+                    <img class='card-top-img' src="{{deal['deal_image']}}">
+                    
+                    <div class="card-body">
+                        <p>{{deal['deal_name']}}</p>
+                        <p class="company">{{deal['deal_offer']}}</p>
+                        <p class="company">{{deal['deal_category']}}</p>
+                        <a class='btn btn-primary' href="https://www.flipkart.com{{deal['deal_link']}}">Visit</a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            {%endfor%}
+            {%else%}
+            <h3 style="margin-top: 3em;">Please run the web scrapper...</h3>
+            {%endif%}
+        </div>
+    </div>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+</body>
+</html>
